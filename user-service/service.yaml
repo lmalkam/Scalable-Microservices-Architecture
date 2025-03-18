@@ -7,8 +7,9 @@ metadata:
     app: user-service
 spec:
   ports:
-    - port: 5000
+    - protocol: TCP
+      port: 5000
       targetPort: 5000
   selector:
     app: user-service
-  type: ClusterIP
+  type: LoadBalancer
