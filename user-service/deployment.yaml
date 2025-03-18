@@ -22,4 +22,4 @@ spec:
             - containerPort: 5000
           envFrom:
             - secretRef:
-                name:user-service-env
+                name: user-service-env
