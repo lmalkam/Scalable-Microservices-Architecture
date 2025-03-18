@@ -20,3 +20,6 @@ spec:
           image: lmalkam/user-service:latest
           ports:
             - containerPort: 5000
+          envFrom:
+            - secretRef:
+                name:user-service-env
