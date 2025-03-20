@@ -5,6 +5,26 @@ const jwt = require("jsonwebtoken")
 
 const router = express.Router()
 
+
+router.get("/", async(req,res) => {
+
+
+  try{
+
+    const users = await User.find();
+
+    if(!users){
+      return res.status(500).send({"msg" : "No users are registered"});
+    }
+
+    res.status(200).send(users);
+  }
+  catch(err){
+
+    res.status(500).send(err);
+  }
+})
+
 // Register a new user
 router.post("/register", async (req, res) => {
   try {
@@ -34,7 +54,7 @@ router.post("/login", async (req, res) => {
 
     const user = await User.findOne({ email })
     if (!user) {
-      res.status(400).json({ error: "No user with this email was found" })
+      return res.status(400).json({ error: "No user with this email was found" })
     }
 
     const isMatch = await argon2.verify(user.password, password)

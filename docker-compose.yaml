@@ -1,0 +1,67 @@
+version: "3.8"
+
+services:
+  user-service:
+    build: ./user-service
+    ports:
+      - "0:5000"
+    environment:
+      - MONGO_URI=${MONGO_URI_USERS}
+      - JWT_SECRET=${JWT_SECRET}
+    networks:
+      - ecommerce-network
+    depends_on:
+      - mongo
+    deploy:
+      replicas: 2
+
+  product-service:
+    build: ./product-service
+    ports:
+      - "0:5001"
+    environment:
+      - MONGO_URI=${MONGO_URI_PRODUCTS}
+    networks:
+      - ecommerce-network
+    depends_on:
+      - mongo
+    deploy:
+      replicas: 2
+
+  notification-service:
+    build: ./notification-service
+    ports:
+      - 5005:5005
+    environment:
+      - NODEMAILER_EMAIL=${NODEMAILER_EMAIL}
+      - NODEMAILER_PASSWORD=${NODEMAILER_PASSWORD}
+    networks:
+      - ecommerce-network
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - ecommerce-network
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - ecommerce-network
+    depends_on:
+      - user-service
+      - product-service
+
+volumes:
+  mongo-data:
+
+networks:
+  ecommerce-network:
+    driver: bridge
