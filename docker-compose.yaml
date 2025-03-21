@@ -51,6 +51,19 @@ services:
     networks:
       - ecommerce-network
 
+  order-service:
+    build: ./order-service
+    ports:
+      - 0:5003
+    environment:
+      - MONGO_URI=${MONGO_URI_ORDER}
+    networks:
+      - ecommerce-network
+    depends_on:
+      - mongo
+    deploy:
+      replicas: 2
+
   mongo:
     image: mongo
     ports:

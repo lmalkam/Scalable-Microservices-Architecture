@@ -68,4 +68,32 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+router.put("/:id/deduct", async (req, res) => {
+  const { quantity } = req.body;
+
+  if (!quantity || quantity <= 0) {
+    return res.status(400).json({ msg: "Invalid quantity" });
+  }
+
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ msg: "Product not found" });
+    }
+
+    if (product.stock < quantity) {
+      return res.status(400).json({ msg: "Insufficient stock" });
+    }
+
+    product.stock -= quantity;
+    await product.save();
+
+    res.status(200).json({ msg: "Stock deducted successfully", product });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
+
 module.exports = router;
