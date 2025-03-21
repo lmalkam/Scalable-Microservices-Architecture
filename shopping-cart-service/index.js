@@ -10,7 +10,6 @@ app.use(express.json());
 
 PORT = process.env.PORT || 5002;
 
-// routes
 app.use("/api/cart", cartRoutes);
 
 mongoose
