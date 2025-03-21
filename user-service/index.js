@@ -8,10 +8,7 @@ const PORT = process.env.PORT || 5000
 dotenv.config();
 
 const app = express();
-
-
 app.use(express.json());
-
 app.use("/api/users", userRoutes);
 
 mongoose.connect(process.env.MONGO_URI , {
