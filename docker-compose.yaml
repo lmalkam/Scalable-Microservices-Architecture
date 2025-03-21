@@ -28,6 +28,19 @@ services:
     deploy:
       replicas: 2
 
+  shopping-cart-service:
+    build: ./shopping-cart-service
+    ports:
+      - 0:5002
+    environment:
+      - MONGO_URI=${MONGO_URI_CART}
+    networks:
+      - ecommerce-network
+    depends_on:
+      - mongo
+    deploy:
+      replicas: 2
+
   notification-service:
     build: ./notification-service
     ports:
