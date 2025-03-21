@@ -17,6 +17,6 @@ spec:
     spec:
       containers : 
       - name : product-service
-        image : lineshmalkam/product:service:latest
+        image : lmalkam/product-service:latest
         port:
           - containerPorts : 5001
