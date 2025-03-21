@@ -20,3 +20,19 @@ spec:
           image: lmalkam/user-service:latest
           ports:
             - containerPort: 5000
+          env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: MONGO_URI
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: JWT_SECRET
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: user-service-config
+                  key: PORT
