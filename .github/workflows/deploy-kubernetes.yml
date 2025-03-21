@@ -3,7 +3,7 @@ name: Deploy to GKE
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
@@ -34,11 +34,6 @@ jobs:
         with:
           cluster_name: ${{ secrets.GKE_CLUSTER_NAME }}
           location: ${{ secrets.GKE_REGION }}
-
-      - name: Build and Push Docker Image
-        run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ matrix.service }}:latest ./${{ matrix.service }}
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ matrix.service }}:latest
 
       - name: Deploy to GKE
         run: |
