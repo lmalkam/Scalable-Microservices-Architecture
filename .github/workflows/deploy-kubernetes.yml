@@ -1,0 +1,47 @@
+name: Deploy to GKE
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        service:
+          [
+            user-service,
+            product-service,
+            shopping-cart-service,
+            order-service,
+            notification-service,
+          ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Authenticate to GKE
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Configure kubectl
+        uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: ${{ secrets.GKE_CLUSTER_NAME }}
+          location: ${{ secrets.GKE_REGION }}
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ matrix.service }}:latest ./${{ matrix.service }}
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ matrix.service }}:latest
+
+      - name: Deploy to GKE
+        run: |
+          kubectl apply -f ${{ matrix.service }}/deployment.yaml
+          kubectl apply -f ${{ matrix.service }}/service.yaml
+          kubectl rollout status deployment/${{ matrix.service }} --timeout=300s
