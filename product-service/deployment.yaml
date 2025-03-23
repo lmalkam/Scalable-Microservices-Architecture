@@ -14,10 +14,20 @@ spec:
     metadata:
       labels: 
         app: product-service
-  
     spec:
       containers : 
       - name : product-service
         image : lmalkam/product-service:latest
-        port:
-          - containerPorts : 5001
+        ports:
+          - containerPort: 5001
+        env:
+          - name: MONGO_URI
+            valueFrom:
+              secretKeyRef:
+                name: mongo-secret
+                key: MONGO_URI
+          - name: PORT
+            valueFrom:
+              configMapKeyRef:
+                name: product-service-config
+                key: PORT
